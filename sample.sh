@@ -3,4 +3,4 @@ read name
 echo "Enter Your Number"
 read number
 echo "Hi $name"
-echo "This is Your Lucky Number"
+echo "This is Your Lucky Number:$number"
