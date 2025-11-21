@@ -32,7 +32,7 @@ jobs:
         run: echo "Building docker image"
 
       - name: Push to ECR
-        run: echo "Pushed docker images to ecr
+        run: echo "Pushed docker images to ecr"
 
   deploy-dev:
     needs: build-test
