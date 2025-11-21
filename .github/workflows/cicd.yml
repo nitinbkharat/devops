@@ -57,7 +57,11 @@ jobs:
 
     steps:
       - name: Manual approval
-        run: echo "Manual approval"
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.TOKEN }}
+          approvers: nitinbkharat,nitinkumar.kharat@gmail.com
+          minimum-approvals: 1
 
   deploy-stage:
     needs: stage-approval
