@@ -75,7 +75,7 @@ jobs:
       - name: Manual Prod Approval
         uses: trstringer/manual-approval@v1
         with:
-          approvers: nitin
+          approvers: nitinbkharat
           minimum-approvals: 1
 
   deploy-prod:
