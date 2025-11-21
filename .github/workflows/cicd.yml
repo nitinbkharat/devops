@@ -1,0 +1,92 @@
+name: CI-CD-Pipeline
+
+on:
+  push:
+    branches:
+      - "master"
+
+env:
+  AWS_REGION: ap-south-1
+  ECR_REPO: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/myapp
+  IMAGE_TAG: ${{ github.run_number }}
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build & Test (Maven)
+        run: echo "Running maven command to build jar file of the project"
+
+      - name: SonarCloud Scan
+        run: echo "Scaning sonarqube"
+
+      - name: Login to ECR
+        run: echo "login to ECR"
+
+      - name: Build Docker Image
+        run: echo "Building docker image"
+
+      - name: Push to ECR
+        run: echo "Pushed docker images to ecr
+
+  deploy-dev:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update KubeConfig
+        run: echo "Deploying code on dev"
+
+  promote-qa:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+
+    steps:
+      - name: Auto Promote to QA
+        run: echo "deploying code to QA"
+
+  stage-approval:
+    needs: promote-qa
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Manual approval
+        run: echo "Manual approval"
+
+  deploy-stage:
+    needs: stage-approval
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to stage
+        run: echo "deploying code to stage"
+
+  prod-approval:
+    needs: deploy-stage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Manual Prod Approval
+        uses: trstringer/manual-approval@v1
+        with:
+          approvers: nitin
+          minimum-approvals: 1
+
+  deploy-prod:
+    needs: prod-approval
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Production
+        run: echo "deploying code to prod"
